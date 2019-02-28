@@ -54,7 +54,7 @@ class Stripes extends Component {
           timing: { delay: stripe.delay, duration: 200, ease: easePolyOut },
           events: {
             end() {
-              console.log('animation finished');
+              // console.log('animation finished');
             }
           }
         }}
