@@ -3,6 +3,7 @@ import Fade from 'react-reveal/Fade';
 
 import FormField from '../../ui/formFields';
 import { validate } from '../../ui/misc';
+import { firebasePromotion } from '../../../firebase';
 
 class Enroll extends Component {
   constructor(props) {
@@ -46,6 +47,30 @@ class Enroll extends Component {
     this.setState({ formdata: newFormdata, formError: false });
   }
 
+  resetFormSuccess(type) {
+    const newFormdata = { ...this.state.formdata };
+
+    for (let key in newFormdata) {
+      newFormdata[key].value = '';
+      newFormdata[key].valid = false;
+      newFormdata[key].validationMessage = '';
+    }
+
+    this.setState({
+      formdata: newFormdata,
+      formError: false,
+      formSuccess: type ? 'Congratulations!' : 'Already on the database'
+    });
+
+    this.successMessage();
+  }
+
+  successMessage() {
+    setTimeout(() => {
+      this.setState({ formSuccess: '' });
+    }, 2000);
+  }
+
   submitForm(event) {
     event.preventDefault();
 
@@ -58,7 +83,20 @@ class Enroll extends Component {
     }
 
     if (formIsValid) {
-      console.log(dataToSubmit);
+      firebasePromotion
+        .orderByChild('email')
+        .equalTo(dataToSubmit.email)
+        .once('value')
+        .then(snapshot => {
+          if (snapshot.val() === null) {
+            this.resetFormSuccess(true);
+            firebasePromotion.push(dataToSubmit);
+          } else {
+            this.resetFormSuccess(false);
+          }
+        });
+
+      //   this.resetFormSuccess();
     } else {
       this.setState({ formError: true });
     }
@@ -81,7 +119,12 @@ class Enroll extends Component {
                   Something is wrong, try again.
                 </div>
               ) : null}
+              <div className="success_label">{this.state.formSuccess}</div>
               <button onClick={event => this.submitForm(event)}>Enroll</button>
+              <div className="enroll_discl">
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry.
+              </div>
             </div>
           </form>
         </div>
