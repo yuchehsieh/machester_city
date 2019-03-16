@@ -9,12 +9,20 @@ import Home from './components/home';
 import SignIn from './components/signin';
 
 import Dashboard from './components/admin/dashboard';
+import AdminMatches from './components/admin/matches';
 
 const Routes = props => {
   console.log(props);
   return (
     <Layout>
       <Switch>
+        <PrivateRoute
+          {...props}
+          path="/admin_matches"
+          exact
+          component={AdminMatches}
+        />
+
         <PrivateRoute
           {...props}
           path="/dashboard"
