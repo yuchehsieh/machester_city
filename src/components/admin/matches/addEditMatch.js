@@ -37,7 +37,7 @@ class AddEditMatch extends Component {
             label: 'Select the local team',
             name: 'select_local',
             type: 'select',
-            options: []
+            options: [{ key: 'Yes', value: 'Yes' }, { key: 'No', value: 'No' }]
           },
           validation: {
             required: true
@@ -45,6 +45,119 @@ class AddEditMatch extends Component {
           valid: false,
           validationMessage: '',
           showlabel: false
+        },
+        resultLocal: {
+          element: 'input',
+          value: '',
+          config: {
+            label: 'Result local',
+            name: 'result_local_input',
+            type: 'text'
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: false
+        },
+        away: {
+          element: 'select',
+          value: '',
+          config: {
+            label: 'Select the local team',
+            name: 'select_local',
+            type: 'select',
+            options: [{ key: 'Yes', value: 'Yes' }, { key: 'No', value: 'No' }]
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: false
+        },
+        resultAway: {
+          element: 'input',
+          value: '',
+          config: {
+            label: 'Result local',
+            name: 'result_local_input',
+            type: 'text'
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: false
+        },
+        referee: {
+          element: 'input',
+          value: '',
+          config: {
+            label: 'Referee',
+            name: 'referee_input',
+            type: 'text'
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: true
+        },
+        stadium: {
+          element: 'input',
+          value: '',
+          config: {
+            label: 'Stadium',
+            name: 'stadium_input',
+            type: 'text'
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: true
+        },
+        result: {
+          element: 'select',
+          value: '',
+          config: {
+            label: 'Team result',
+            name: 'select_result',
+            type: 'select',
+            options: [
+              { key: 'W', value: 'W' },
+              { key: 'L', value: 'L' },
+              { key: 'D', value: 'D' },
+              { key: 'n/a', value: 'n/a' }
+            ]
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: true
+        },
+        final: {
+          element: 'select',
+          value: '',
+          config: {
+            label: 'Game played ?',
+            name: 'select_played',
+            type: 'select',
+            options: [{ key: 'Yes', value: 'Yes' }, { key: 'No', value: 'No' }]
+          },
+          validation: {
+            required: true
+          },
+          valid: false,
+          validationMessage: '',
+          showlabel: true
         }
       }
     };
@@ -78,11 +191,90 @@ class AddEditMatch extends Component {
                 formdata={this.state.formdata.date}
                 onChange={this.updateForm.bind(this)}
               />
-              <FormField
-                id={'local'}
-                formdata={this.state.formdata.local}
-                onChange={this.updateForm.bind(this)}
-              />
+
+              <div className="select_team_layout">
+                <div className="label_inputs">Local</div>
+
+                <div className="wrapper">
+                  <div className="left">
+                    <FormField
+                      id={'local'}
+                      formdata={this.state.formdata.local}
+                      onChange={this.updateForm.bind(this)}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      id={'resultLocal'}
+                      formdata={this.state.formdata.resultLocal}
+                      onChange={this.updateForm.bind(this)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="select_team_layout">
+                <div className="label_inputs">Away</div>
+
+                <div className="wrapper">
+                  <div className="left">
+                    <FormField
+                      id={'away'}
+                      formdata={this.state.formdata.away}
+                      onChange={this.updateForm.bind(this)}
+                    />
+                  </div>
+                  <div>
+                    <FormField
+                      id={'resultAway'}
+                      formdata={this.state.formdata.resultAway}
+                      onChange={this.updateForm.bind(this)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="split_fields">
+                <FormField
+                  id={'referee'}
+                  formdata={this.state.formdata.referee}
+                  onChange={this.updateForm.bind(this)}
+                />
+
+                <FormField
+                  id={'stadium'}
+                  formdata={this.state.formdata.stadium}
+                  onChange={this.updateForm.bind(this)}
+                />
+              </div>
+
+              <div className="split_fields last">
+                <FormField
+                  id={'result'}
+                  formdata={this.state.formdata.result}
+                  onChange={this.updateForm.bind(this)}
+                />
+
+                <FormField
+                  id={'final'}
+                  formdata={this.state.formdata.final}
+                  onChange={this.updateForm.bind(this)}
+                />
+              </div>
+
+              <div className="success_label">{this.state.formSuccess}</div>
+
+              {this.state.formError ? (
+                <div className="error_label">Something is wrong</div>
+              ) : (
+                ''
+              )}
+
+              <div className="admin_submit">
+                <button onClick={event => this.submitForm(event)}>
+                  {this.state.formType}
+                </button>
+              </div>
             </form>
           </div>
         </div>
