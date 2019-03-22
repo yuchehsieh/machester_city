@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { firebase } from '../../firebase';
 import FileUplodaer from 'react-firebase-file-uploader';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { throws } from 'assert';
 
 class Fileuploader extends Component {
   constructor(props) {
@@ -53,6 +54,17 @@ class Fileuploader extends Component {
         });
       })
       .catch(error => console.log(error));
+
+    this.props.filename(filename);
+  }
+
+  uploadAgain() {
+    this.setState({
+      name: '',
+      isUploading: false,
+      fileURL: ''
+    });
+    this.props.resetImage();
   }
 
   render() {
@@ -80,22 +92,20 @@ class Fileuploader extends Component {
             <CircularProgress style={{ color: '#98c6e9' }} thickness={7} />
           </div>
         ) : null}
-        {
-            this.state.fileURL ?
-                <div className="image_upload_container">
-                   <img 
-                    style={{
-                        width: '100%'
-                    }}
-                    src={this.state.fileURL}
-                    alt={this.state.filename}
-                   />
-                    <div className="remove" onClick={() => this.uploadAgain()}>
-                    Remove
-                   </div>
-                </div>
-            :null
-        }
+        {this.state.fileURL ? (
+          <div className="image_upload_container">
+            <img
+              style={{
+                width: '100%'
+              }}
+              src={this.state.fileURL}
+              alt={this.state.filename}
+            />
+            <div className="remove" onClick={() => this.uploadAgain()}>
+              Remove
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }

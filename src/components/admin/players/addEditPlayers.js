@@ -89,7 +89,7 @@ class AddEditPlayers extends Component {
           validation: {
             required: true
           },
-          valid: true
+          valid: false
         }
       }
     };
@@ -108,11 +108,15 @@ class AddEditPlayers extends Component {
     }
   }
 
-  updateForm(element) {
+  updateForm(element, content = '') {
     const newFormdata = { ...this.state.formdata };
     const newElement = { ...newFormdata[element.id] };
 
-    newElement.value = element.event.target.value;
+    if (!content) {
+      newElement.value = element.event.target.value;
+    } else {
+      newElement.value = content;
+    }
 
     let validData = validate(newElement);
     newElement.valid = validData[0];
@@ -121,6 +125,7 @@ class AddEditPlayers extends Component {
     newFormdata[element.id] = newElement;
 
     this.setState({ formdata: newFormdata, formError: false });
+    // 更新表格內容之後把 formError 設成 false
   }
 
   submitForm(event) {
@@ -129,25 +134,42 @@ class AddEditPlayers extends Component {
     let dataToSubmit = {};
     let formIsValid = true;
 
-    this.state.teams.forEach(team => {
-      if (team.shortName === dataToSubmit.local) {
-        dataToSubmit['localThmb'] = team.thmb;
-      }
-      if (team.shortName === dataToSubmit.away) {
-        dataToSubmit['awayThmb'] = team.thmb;
-      }
-    });
+    for (let key in this.state.formdata) {
+      dataToSubmit[key] = this.state.formdata[key].value;
+      formIsValid = this.state.formdata[key].valid && formIsValid;
+    }
 
     if (formIsValid) {
-      // SUBMIT FORM
+      if (this.state.formType === 'Edit player') {
+      } else {
+        firebasePlayers
+          .push(dataToSubmit)
+          .then(() => {
+            this.props.history.push('/admin_players');
+          })
+          .catch(error => {
+            console.log(error);
+            this.setState({ formError: true });
+          });
+      }
     } else {
       this.setState({ formError: true });
     }
   }
 
-  resetImage() {}
+  resetImage() {
+    const newFormdata = { ...this.state.formdata };
+    newFormdata['image'].value = '';
+    newFormdata['image'].valid = '';
+    this.setState({
+      defaultImg: '',
+      formdata: newFormdata
+    });
+  }
 
-  storeFilename() {}
+  storeFilename(filename) {
+    this.updateForm({ id: 'image' }, filename);
+  }
 
   render() {
     return (
