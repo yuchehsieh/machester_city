@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AdminLayout from '../../../hoc/adminLayout';
 import FormField from '../../ui/formFields';
@@ -11,6 +12,7 @@ class AddEditPlayers extends Component {
     super(props);
 
     this.state = {
+      isLoading: true,
       playerId: '',
       formType: '',
       formError: false,
@@ -101,7 +103,8 @@ class AddEditPlayers extends Component {
     console.log(playerId);
     if (!playerId) {
       this.setState({
-        formType: 'Add Player'
+        formType: 'Add Player',
+        isLoading: false
       });
     } else {
       firebasePlayers
@@ -128,6 +131,7 @@ class AddEditPlayers extends Component {
         })
         .catch(err => {
           console.log(err);
+          this.setState({ isLoading: false });
         });
     }
   }
@@ -144,7 +148,8 @@ class AddEditPlayers extends Component {
       playerId,
       defaultImg,
       formType,
-      formdata: newFormdata
+      formdata: newFormdata,
+      isLoading: false
     });
   }
 
@@ -233,57 +238,67 @@ class AddEditPlayers extends Component {
     return (
       <AdminLayout>
         <div className="editplayers_dialog_wrapper">
-          <h2>{this.state.formType}</h2>
+          {this.state.isLoading ? (
+            <div className="admin_progress">
+              {this.state.isLoading ? (
+                <CircularProgress thickness={7} style={{ color: '#98c5e9' }} />
+              ) : null}
+            </div>
+          ) : (
+            <Fragment>
+              <h2>{this.state.formType}</h2>
 
-          <div>
-            <form onSubmit={event => this.submitForm(event)}>
-              <Fileuploader
-                dir="players"
-                tag={'Player image'}
-                defaultImg={this.state.defaultImg}
-                defaultImgName={this.state.formdata.image.value}
-                resetImage={() => this.resetImage()}
-                filename={filename => this.storeFilename(filename)}
-              />
+              <div>
+                <form onSubmit={event => this.submitForm(event)}>
+                  <Fileuploader
+                    dir="players"
+                    tag={'Player image'}
+                    defaultImg={this.state.defaultImg}
+                    defaultImgName={this.state.formdata.image.value}
+                    resetImage={() => this.resetImage()}
+                    filename={filename => this.storeFilename(filename)}
+                  />
 
-              <FormField
-                id={'name'}
-                formdata={this.state.formdata.name}
-                onChange={this.updateForm.bind(this)}
-              />
+                  <FormField
+                    id={'name'}
+                    formdata={this.state.formdata.name}
+                    onChange={this.updateForm.bind(this)}
+                  />
 
-              <FormField
-                id={'lastname'}
-                formdata={this.state.formdata.lastname}
-                onChange={this.updateForm.bind(this)}
-              />
+                  <FormField
+                    id={'lastname'}
+                    formdata={this.state.formdata.lastname}
+                    onChange={this.updateForm.bind(this)}
+                  />
 
-              <FormField
-                id={'number'}
-                formdata={this.state.formdata.number}
-                onChange={this.updateForm.bind(this)}
-              />
+                  <FormField
+                    id={'number'}
+                    formdata={this.state.formdata.number}
+                    onChange={this.updateForm.bind(this)}
+                  />
 
-              <FormField
-                id={'position'}
-                formdata={this.state.formdata.position}
-                onChange={this.updateForm.bind(this)}
-              />
+                  <FormField
+                    id={'position'}
+                    formdata={this.state.formdata.position}
+                    onChange={this.updateForm.bind(this)}
+                  />
 
-              <div className="success_label">{this.state.formSuccess}</div>
-              {this.state.formError ? (
-                <div className="error_label">Something is wrong</div>
-              ) : (
-                ''
-              )}
+                  <div className="success_label">{this.state.formSuccess}</div>
+                  {this.state.formError ? (
+                    <div className="error_label">Something is wrong</div>
+                  ) : (
+                    ''
+                  )}
 
-              <div className="admin_submit">
-                <button onClick={event => this.submitForm(event)}>
-                  {this.state.formType}
-                </button>
+                  <div className="admin_submit">
+                    <button onClick={event => this.submitForm(event)}>
+                      {this.state.formType}
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
+            </Fragment>
+          )}
         </div>
       </AdminLayout>
     );
